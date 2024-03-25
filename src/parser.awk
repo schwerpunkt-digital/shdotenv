@@ -161,6 +161,7 @@ function output(flag, key, value) {
   if (FORMAT == "yaml") output_yaml(flag, key, value)
   if (FORMAT == "php") output_php(flag, key, value)
   if (FORMAT == "name") output_name_only(flag, key, value)
+  if (FORMAT == "value") output_value(flag, key, value)
 }
 
 function output_sh(flag, key, value) {
@@ -231,6 +232,12 @@ function output_php(flag, key, value) {
     printf "}\n"
   } else if (flag == ONLY_EXPORT || flag == DO_EXPORT || flag == NO_EXPORT) {
     printf "  $env[\"%s\"] = \"%s\";\n", key, json_escape(value)
+  }
+}
+
+function output_value(flag, key, value) {
+  if (flag == ONLY_EXPORT || flag == DO_EXPORT || flag == NO_EXPORT) {
+    printf "\"%s\"", json_escape(value)
   }
 }
 
@@ -371,7 +378,7 @@ BEGIN {
   }
 
   if (FORMAT == "") FORMAT = "sh"
-  if (!match(FORMAT, "^(sh|csh|fish|json|jsonl|yaml|php|name)$")) {
+  if (!match(FORMAT, "^(sh|csh|fish|json|jsonl|yaml|php|name|value)$")) {
     abort("unsupported format: " FORMAT)
   }
 
